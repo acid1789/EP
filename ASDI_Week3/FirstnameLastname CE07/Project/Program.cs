@@ -11,6 +11,9 @@ namespace FirstnameLastname_CE07
         static void Main(string[] args)
         {
             List<Employee> employees = new List<Employee>();
+
+            employees.Add(new FullTime("Bob", "123 Dreary Lane", 47.50m));
+            employees.Add(new Salaried("Jane", "The Hill", 35000));
             
             while (true)
             {
@@ -109,9 +112,50 @@ namespace FirstnameLastname_CE07
             }
         }
 
+        static bool FindEmployee(List<Employee> employees, string name, out int index)
+        {
+            for( int i = 0; i < employees.Count; i++ )
+            {
+                Employee e = employees[i];
+                if (e.name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    index = i;
+                    return true;
+                }
+            }
+            index = -1;
+            return false;
+        }
+
         static void RemoveEmployee(List<Employee> employees)
         {
+            Console.Clear();
             Console.WriteLine("== Remove Employee == ");
+            int i = 0;
+            for (; i < employees.Count; i++)
+                Console.WriteLine("{0}) {1} ({2})", i + 1, employees[i].name, employees[i].address);
+            Console.WriteLine("{0}) Previous Menu", ++i);
+            Console.Write("Choice: ");
+            string il = Console.ReadLine();
+            string inputLine = il.ToLower();
+
+            if (inputLine == i.ToString() || inputLine == "previous menu")
+                return;
+
+            int index = -1;
+            if (!int.TryParse(inputLine, out index))
+                FindEmployee(employees, inputLine, out index);
+            else
+                index--;    // Decrement the index value since the display list is one based and our array is index based
+
+            if (index >= 0 && index < employees.Count)
+            {
+                Employee e = employees[index];
+                employees.RemoveAt(index);
+                Console.WriteLine("Removed {0}", e.name);
+            }
+            else
+                Console.WriteLine("Invalid Selection: " + il);
         }
 
         static void DisplayPayroll(List<Employee> employees)
