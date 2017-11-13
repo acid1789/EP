@@ -9,6 +9,26 @@ namespace FirstnameLastname_CE08
 {
     class Program
     {
+        static string[] ReadAllLines_StreamReaderIsHorribleAndShouldNotBeUsed(string fileName)
+        {
+            List<string> lines = new List<string>();
+            StreamReader sr = new StreamReader(fileName);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+            sr.Close();
+            return lines.ToArray();
+        }
+
+        static void WriteAllText_StreamWriterIsHorribleAndSHouldNotBeUsed(string fileName, string output)
+        {
+            StreamWriter sw = new StreamWriter(fileName, false);
+            sw.WriteLine(output);
+            sw.Close();
+        }
+
         static void Main(string[] args)
         {
             string[] dataFields = File.ReadAllLines("DataFieldsLayout.txt");
@@ -28,7 +48,8 @@ namespace FirstnameLastname_CE08
 
             string dataFileName = string.Format("DataFile{0}.txt", index);
             Console.WriteLine("Processing file {0}...", dataFileName);
-            string[] dataFileLines = File.ReadAllLines(dataFileName);
+            //string[] dataFileLines = File.ReadAllLines(dataFileName);
+            string[] dataFileLines = ReadAllLines_StreamReaderIsHorribleAndShouldNotBeUsed(dataFileName);
             string json = "[";
             int cap = dataFileLines.Length - 1;
             for (int i = 1; i < cap; i++)
@@ -48,7 +69,8 @@ namespace FirstnameLastname_CE08
             }
             json += "]";
 
-            File.WriteAllText("output.json", json);
+            //File.WriteAllText("output.json", json);
+            WriteAllText_StreamWriterIsHorribleAndSHouldNotBeUsed("output.json", json);
         }
     }
 }
